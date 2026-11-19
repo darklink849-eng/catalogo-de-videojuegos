@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ juego.titulo }} - Detalle</title>
+    <style>
+        body {
+            background-color: #0b0c10;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #141821;
+            border: 3px solid #00ffcc;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.2);
+        }
+        .btn-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #00ffcc;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .top-section {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        .game-poster {
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid #66fcf1;
+        }
+        .price-box {
+            background: #1f2833;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #00ffcc;
+        }
+        .promo-badge {
+            display: inline-block;
+            background: #ff2a6d;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        .status-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background: #0b0c10;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border: 1px dashed #45a29e;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .status-pill {
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: 2px solid #333;
+            opacity: 0.35;
+        }
+        .status-pill.active-yes {
+            background: #00ffcc;
+            color: #0b0c10;
+            border-color: #00ffcc;
+            opacity: 1;
+            box-shadow: 0 0 15px #00ffcc;
+        }
+        .status-pill.active-no {
+            background: #ff2a6d;
+            color: white;
+            border-color: #ff2a6d;
+            opacity: 1;
+            box-shadow: 0 0 15px #ff2a6d;
+        }
+        .bottom-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #1f2833;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .qr-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            color: black;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="/catalogo" class="btn-back">⬅ Volver al Catálogo (A - Z)</a>
+
+        <div class="top-section">
+            <div>
+                <img src="{{ juego.imagen }}" alt="{{ juego.titulo }}" class="game-poster">
+                <h3 style="text-align: center; color: #66fcf1; margin-top: 10px;">{{ juego.titulo }} ({{ juego.consola }})</h3>
+            </div>
+
+            <div>
+                <h2 style="color: #00ffcc; margin-top: 0;">Descripción del Videojuego</h2>
+                <p style="font-size: 1.15rem; line-height: 1.6; color: #c5c6c7;">
+                    {{ juego.descripcion }}
+                </p>
+
+                <div class="price-box">
+                    <div style="font-size: 1.3rem;">
+                        <strong>Precio:</strong> {{ juego.precio }} Bs
+                    </div>
+                    {% if juego.precio_promo %}
+                        <div class="promo-badge">
+                            % {{ juego.precio_promo }} Bs Promoción Especial
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado Disponible / No Disponible con Stickman "¡Ohh!" y calavera -->
+        <div class="status-area">
+            <div class="status-pill {% if juego.disponible == 1 %}active-yes{% endif %}">
+                ✔ Disponible
+            </div>
+
+            <div style="text-align: center;">
+                <div style="color: #00ffcc; font-weight: bold; margin-bottom: 4px;">¡Ohh!</div>
+                <svg width="70" height="85" viewBox="0 0 100 110">
+                    <circle cx="50" cy="22" r="13" stroke="#00ffcc" stroke-width="3" fill="none"/>
+                    <circle cx="46" cy="20" r="2" fill="#00ffcc"/>
+                    <circle cx="54" cy="20" r="2" fill="#00ffcc"/>
+                    <circle cx="50" cy="27" r="3" stroke="#00ffcc" stroke-width="2" fill="none"/>
+                    <line x1="50" y1="35" x2="50" y2="70" stroke="#00ffcc" stroke-width="3"/>
+                    <line x1="50" y1="45" x2="25" y2="25" stroke="#00ffcc" stroke-width="3"/>
+                    <line x1="50" y1="45" x2="75" y2="25" stroke="#00ffcc" stroke-width="3"/>
+                    <line x1="50" y1="70" x2="35" y2="100" stroke="#00ffcc" stroke-width="3"/>
+                    <line x1="50" y1="70" x2="65" y2="100" stroke="#00ffcc" stroke-width="3"/>
+                </svg>
+                <div style="font-size: 28px;">☠️</div>
+            </div>
+
+            <div class="status-pill {% if juego.disponible == 0 %}active-no{% endif %}">
+                ✖ No Disponible
+            </div>
+        </div>
+
+        <!-- QR, Código de barras y Correo -->
+        <div class="bottom-bar">
+            <div class="qr-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=Juego-{{ juego.id }}-{{ juego.titulo }}" alt="QR">
+                <div>
+                    <div>CÓDIGO QR / BARRAS</div>
+                    <small>ID Producto: #00{{ juego.id }}</small><br>
+                    <small>||||| || |||| ||| ||||</small>
+                </div>
+            </div>
+
+            <div style="text-align: right; color: #c5c6c7;">
+                <strong>📧 Correo / Información:</strong><br>
+                ventas@catalogojuegos.com<br>
+                <small style="color: #66fcf1;">Sistema de almacén y productos</small>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

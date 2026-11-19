@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo A-Z - Videojuegos</title>
+    <style>
+        body {
+            background-color: #0b0c10;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #141821;
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: 1px solid #00ffcc;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+        .search-form input {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #45a29e;
+            background: #0b0c10;
+            color: white;
+            width: 260px;
+        }
+        .search-form button, .btn-filter {
+            padding: 10px 18px;
+            background: #00ffcc;
+            color: #0b0c10;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-filter {
+            background: #1f2833;
+            color: #66fcf1;
+            border: 1px solid #66fcf1;
+        }
+        .btn-filter.active {
+            background: #00ffcc;
+            color: #0b0c10;
+        }
+        .layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 25px;
+        }
+        /* Pantalla 2: Lista A-Z */
+        .sidebar-az {
+            background: #141821;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #45a29e;
+            height: fit-content;
+        }
+        .az-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+        .az-link {
+            padding: 5px 9px;
+            background: #1f2833;
+            color: #00ffcc;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .az-link:hover, .az-link.active {
+            background: #00ffcc;
+            color: #0b0c10;
+        }
+        .list-names {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        .list-names li a {
+            display: block;
+            padding: 6px 8px;
+            color: #c5c6c7;
+            text-decoration: none;
+            border-bottom: 1px solid #1f2833;
+            font-size: 0.9rem;
+        }
+        .list-names li a:hover {
+            color: #00ffcc;
+            padding-left: 12px;
+        }
+        /* Pantalla 3: Imágenes de videojuegos */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 20px;
+        }
+        .game-card {
+            background: #141821;
+            border: 2px solid #1f2833;
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .game-card:hover {
+            transform: translateY(-6px);
+            border-color: #00ffcc;
+        }
+        .game-card img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+        }
+        .game-info {
+            padding: 12px;
+        }
+        .console-tag {
+            background: #00ffcc;
+            color: #0b0c10;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <a href="/" style="text-decoration: none; font-size: 28px;">☠️</a>
+            <h2 style="margin: 0; color: #00ffcc;">Catálogo de Videojuegos ({{ juegos|length }})</h2>
+        </div>
+
+        <div>
+            <a href="/catalogo" class="btn-filter {% if not consola_activa %}active{% endif %}">Todos</a>
+            <a href="/catalogo?consola=PS2" class="btn-filter {% if consola_activa == 'PS2' %}active{% endif %}">PS2</a>
+            <a href="/catalogo?consola=PS3" class="btn-filter {% if consola_activa == 'PS3' %}active{% endif %}">PS3</a>
+            <a href="/catalogo?consola=PS4" class="btn-filter {% if consola_activa == 'PS4' %}active{% endif %}">PS4</a>
+        </div>
+
+        <form class="search-form" method="GET" action="/catalogo">
+            <input type="text" name="q" placeholder="Buscar videojuego..." value="{{ busqueda }}">
+            <button type="submit">🔍 Buscar</button>
+        </form>
+    </div>
+
+    <div class="layout">
+        <!-- 2da Pantalla: Lista A-Z -->
+        <aside class="sidebar-az">
+            <h3 style="margin-top: 0; color: #66fcf1;">Lista (A - Z)</h3>
+            <div class="az-grid">
+                {% for l in abecedario %}
+                    <a href="/catalogo?letra={{ l }}" class="az-link {% if letra_activa == l %}active{% endif %}">{{ l }}</a>
+                {% endfor %}
+            </div>
+            <ul class="list-names">
+                {% for j in juegos %}
+                    <li><a href="/juego/{{ j.id }}">▸ {{ j.titulo }} ({{ j.consola }})</a></li>
+                {% endfor %}
+            </ul>
+        </aside>
+
+        <!-- 3ra Pantalla: Cuadrícula con imágenes -->
+        <main class="games-grid">
+            {% for j in juegos %}
+                <a href="/juego/{{ j.id }}" class="game-card">
+                    <img src="{{ j.imagen }}" alt="{{ j.titulo }}">
+                    <div class="game-info">
+                        <span class="console-tag">{{ j.consola }}</span>
+                        <h4 style="margin: 8px 0 4px;">{{ j.titulo }}</h4>
+                        <span style="color: #00ffcc; font-weight: bold;">{{ j.precio_promo if j.precio_promo else j.precio }} Bs</span>
+                    </div>
+                </a>
+            {% endfor %}
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Contacto - Mi Sitio Web{% endblock %}
+{% block content %}
+    <h2>Contáctanos</h2>
+    <form method="POST">
+        <input type="text" name="nombre" placeholder="Tu nombre" required>
+        <textarea name="mensaje" placeholder="Escribe tu mensaje aquí..." rows="4" required></textarea>
+        <button type="submit">Enviar mensaje</button>
+    </form>
+{% endblock %}
